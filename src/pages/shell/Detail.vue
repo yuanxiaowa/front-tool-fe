@@ -6,7 +6,7 @@
       <v-select v-model="command" :items="commandList" label="常用命令" autocomplete item-value="value" item-text="text" multiple>
         <template slot="selection" slot-scope="data">
           <v-chip close @input="data.parent.selectItem(data.item)" :selected="data.selected" class="chip--select-multi" :key="JSON.stringify(data.item)">
-            {{ data.item.name }}
+            {{ data.item.group + '-' + data.item.text }}
           </v-chip>
         </template>
         <template slot="item" slot-scope="data">
@@ -24,7 +24,7 @@
         </template>
       </v-select>
       <v-btn color="cyan" @click="action" :disabled="!command">执行</v-btn>
-      <v-dialog v-model="dialog" persistent max-width="500px">
+      <v-dialog v-model="dialog" persistent>
         <v-btn color="primary" dark slot="activator">添加常用命令</v-btn>
         <v-card>
           <v-card-title>
@@ -76,7 +76,7 @@ export default {
         text: '',
         value: ''
       },
-      command: '',
+      command: [],
       commandList: [],
       term: null,
       socket: null,
@@ -92,28 +92,11 @@ export default {
       this.originalList = JSON.parse(commandList)
       this.updateList()
     }
-    /* this.commandList = [{
-      header: '类别1'
-    }, {
-      text: 'fff',
-      group: 'group1'
-    }, {
-      text: 'fff2222',
-      group: 'group1'
-    }, {
-      header: '类别2'
-    }, {
-      text: 'fff333',
-      group: 'group2'
-    }, {
-      text: 'fff2222',
-      group: 'group2'
-    }] */
   },
   async mounted() {
     // console.log(getScript, fetchInfo)
     var data = await fetchInfo(this.$route.params.id)
-    this.start.bind(data);
+    this.start(data)
   },
   beforeDestroy() {
     if (this.socket) {
@@ -126,8 +109,8 @@ export default {
   methods: {
     updateList() {
       this.commandList = [].concat(...this.originalList
-          .map(item => [{ header: item.name }]
-            .concat(item.children.map(_item => Object.assign(_item, { group: item.name })))))
+        .map(item => [{ header: item.name }]
+          .concat(item.children.map(_item => Object.assign(_item, { group: item.name })))))
     },
     start(data) {
       var ele = this.$refs.term
@@ -175,20 +158,27 @@ export default {
         this.editData = null
       } else {
         let item = this.originalList.find(item => item.name === this.newcommand.category)
-        item.text = this.newcommand.text
-        item.value = this.newcommand.value
-        // item.
+        item.children.push({
+          text: this.newcommand.text,
+          value: this.newcommand.value
+        })
       }
       this.newcommand.text = ''
       this.newcommand.value = ''
       this.saveCommand()
     },
     saveCommand() {
-      localStorage.setItem('commandList', JSON.stringify(this.originalList))
+      localStorage.setItem('commandList', JSON.stringify(this.originalList.map(item => ({
+        name: item.name,
+        children: item.children.map(item => ({
+          text: item.text,
+          value: item.value
+        }))
+      }))))
     },
     action() {
       if (this.socket) {
-        this.socket.send(this.command + '\n')
+        this.socket.send(this.command.join('\n') + '\n')
       }
     },
     edit(item) {
