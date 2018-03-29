@@ -153,16 +153,23 @@ export default {
     },
     add() {
       this.dialog = false;
+      let item = this.originalList.find(item => item.name === this.newcommand.category)
       if (this.editData) {
+        let _item = this.originalList.find(item => item.name === this.editData.group)
         Object.assign(this.editData, this.newcommand)
+        if (item !== _item) {
+          let i = _item.children.findIndex(item => item.name === this.editData.group)
+          _item.children.splice(i, 1)
+          item.children.push(this.editData)
+        }
         this.editData = null
       } else {
-        let item = this.originalList.find(item => item.name === this.newcommand.category)
         item.children.push({
           text: this.newcommand.text,
           value: this.newcommand.value
         })
       }
+      this.updateList()
       this.newcommand.text = ''
       this.newcommand.value = ''
       this.saveCommand()
