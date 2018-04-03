@@ -235,7 +235,7 @@ export default {
           items = this.structures.branches;
         }
         if (items.length > 0) {
-          items = items[0].files.filter(item => item.fullPath !== this.url).map(item => ({ text: item.name, value: item.fullPath }))
+          items = items.filter(item => item.fullPath !== this.url).map(item => ({ text: item.name, value: item.fullPath }))
         }
       }
       return items;
