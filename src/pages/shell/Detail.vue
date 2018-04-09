@@ -23,7 +23,7 @@
           </template>
         </template>
       </v-select>
-      <v-btn color="cyan" @click="action" :disabled="!command">执行</v-btn>
+      <v-btn color="cyan" @click="action" :disabled="!command.length">执行</v-btn>
       <v-dialog v-model="dialog" persistent>
         <v-btn color="primary" dark slot="activator">添加常用命令</v-btn>
         <v-card>

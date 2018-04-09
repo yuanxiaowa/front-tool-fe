@@ -219,7 +219,10 @@ export default {
       })
     },
     refresh() {
-      this.getLogs(this.baseObj.url)
+      this.getLogs(this.baseObj.url).then(() => {
+        this.selected = []
+      })
+      this.getMergeInfo()
     }
   },
   computed: {
