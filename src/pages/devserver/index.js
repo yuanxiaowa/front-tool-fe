@@ -1,6 +1,6 @@
 import Container from '@/components/ContainerWithMenu'
-import List from './List'
-import Add from './Add'
+const List = () => import(/* webpackChunkName: "devserver" */'./List')
+const Add = () => import(/* webpackChunkName: "devserver" */'./Add')
 
 export default {
   path: '/devserver',

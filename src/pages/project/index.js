@@ -1,7 +1,7 @@
 import Container from '@/components/Container'
-import Home from './Home'
-import Add from './Add'
-import Projects from './Projects'
+const Home = () => import(/* webpackChunkName: "project" */'./Home')
+const Add = () => import(/* webpackChunkName: "project" */'./Add')
+const Projects = () => import(/* webpackChunkName: "project" */'./Projects')
 
 export default {
   path: '/project',

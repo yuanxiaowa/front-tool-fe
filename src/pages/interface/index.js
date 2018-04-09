@@ -1,7 +1,7 @@
 import Container from '@/components/Container'
-import List from './List'
-import Edit from './Edit'
-import Preview from './Preview'
+const List = () => import(/* webpackChunkName: "interface" */'./List')
+const Edit = () => import(/* webpackChunkName: "interface" */'./Edit')
+const Preview = () => import(/* webpackChunkName: "interface" */'./Preview')
 export default {
   path: '/interface',
   component: Container,

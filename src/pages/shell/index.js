@@ -1,7 +1,7 @@
 import Container from '@/components/ContainerWithMenu'
-import List from './List'
-import Detail from './Detail'
-import Add from './Add'
+const List = () => import(/* webpackChunkName: "shell" */'./List')
+const Detail = () => import(/* webpackChunkName: "shell" */'./Detail')
+const Add = () => import(/* webpackChunkName: "shell" */'./Add')
 
 export default {
   path: '/shell',

@@ -21,7 +21,7 @@
       </template>
     </v-layout>
     <div @contextmenu.prevent="onContextMenu">
-      <v-data-table v-if="baseObj.url" v-model="selected" :headers="headers" :items="itemsWithMergeinfo" select-all item-key="revision" :pagination.sync="pagination" :total-items="pagination.totalItems" :loading="loading">
+      <v-data-table v-if="baseObj.url" v-model="selected" :headers="headers" :items="filteredItems" select-all item-key="revision" :pagination.sync="pagination" :total-items="pagination.totalItems" :loading="loading">
         <template slot="items" slot-scope="props">
           <tr :active="props.selected">
             <td>
@@ -245,9 +245,9 @@ export default {
     },
     filteredItems() {
       if (!this.ignoreMerged) {
-        return this.items
+        return this.itemsWithMergeinfo
       }
-      return this.items.filter(item => !item.isMerged)
+      return this.itemsWithMergeinfo.filter(item => !item.isMerged)
     },
     logQueryOptions() {
       return {
@@ -257,7 +257,7 @@ export default {
       }
     },
     itemsWithMergeinfo() {
-      return this.filteredItems.map(item => Object.assign({
+      return this.items.map(item => Object.assign({
         isMerged: this.revisions.lastIndexOf(item.revision) > -1
       }, item))
     }

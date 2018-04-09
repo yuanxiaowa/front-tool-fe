@@ -1,6 +1,6 @@
 import Container from '@/components/ContainerWithMenu'
-import Action from './Action'
-import Add from './Add'
+const Action = () => import(/* webpackChunkName: "svn" */'./Action')
+const Add = () => import(/* webpackChunkName: "svn" */'./Add')
 export default {
   path: '/svn',
   component: Container,
