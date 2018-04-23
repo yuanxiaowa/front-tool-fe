@@ -115,8 +115,7 @@ export default {
     start(data) {
       var ele = this.$refs.term
       var term = this.term = new Terminal({
-        cursorBlink: true,  // Do not blink the terminal's cursor
-        cols: 120
+        cursorBlink: true
       });
       var socket = this.socket = io.connect(process.env.NODE_ENV === 'production' ? '' : 'http://localhost:3000');
       socket.on('connect', e => {
