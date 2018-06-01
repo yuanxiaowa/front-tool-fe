@@ -58,7 +58,6 @@ import { fetchDatas, getData, saveData } from '../../api/project'
 import Sortable from 'sortablejs'
 import FormControl from './FormControl'
 import FormEdit from '@/components/FormEdit'
-import mid from '../../util/mid'
 
 function getStructure(data) {
   return Object.keys(data).map(key => {
@@ -229,7 +228,7 @@ export default {
         }
       })
       saveData(this.name, data).then(() => {
-        mid.$emit('toast', '保存成功')
+        this.$toast('保存成功')
       })
     },
     addItem(item) {

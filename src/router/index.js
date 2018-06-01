@@ -6,6 +6,7 @@ import ShellRoute from '../pages/shell'
 import InterfaceRoute from '../pages/interface'
 import DevServer from '../pages/devserver'
 import Project from '../pages/project'
+import Product from '../pages/product'
 
 Vue.use(Router)
 
@@ -14,5 +15,5 @@ export default new Router({
     path: '/menu',
     name: 'Index',
     component: Index
-  }, SvnRoute, ShellRoute, InterfaceRoute, DevServer, Project]
+  }, SvnRoute, ShellRoute, InterfaceRoute, DevServer, Project, Product]
 })

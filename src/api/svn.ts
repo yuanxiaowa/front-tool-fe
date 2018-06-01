@@ -1,12 +1,10 @@
 
-import axios from 'axios'
-var instance = axios.create({
-  baseURL: '/api/svn'
-});
-import { getAData } from '../util'
+import getAxios from './axios';
+
+var instance = getAxios('svn')
 
 export function fetchPaths() {
-  return instance.get('paths').then(getAData)
+  return instance.get('paths')
 }
 
 export function addPath(params: { path: string, name: string }) {
@@ -18,7 +16,7 @@ export function fetchStatus(path: string) {
     params: {
       path
     }
-  }).then(getAData)
+  })
 }
 
 export function fetchInfo(path: string) {
@@ -26,7 +24,7 @@ export function fetchInfo(path: string) {
     params: {
       path
     }
-  }).then(getAData)
+  })
 }
 
 export function fetchStructure(path: string, base?: string) {
@@ -35,7 +33,7 @@ export function fetchStructure(path: string, base?: string) {
       path,
       base
     }
-  }).then(getAData)
+  })
 }
 
 export function fetchLogs(params: {
@@ -45,18 +43,18 @@ export function fetchLogs(params: {
 }) {
   return instance.get('log', {
     params
-  }).then(getAData)
+  })
 }
 
 export function update(path: string) {
-  return instance.post('update', { path }).then(getAData)
+  return instance.post('update', { path })
 }
 
 export function resolveFiles(paths: string[], path: string) {
   return instance.post('resolve', {
     path,
     paths
-  }).then(getAData)
+  })
 }
 
 export function merge(path: string, url: string, revisions: number[]) {
@@ -64,7 +62,7 @@ export function merge(path: string, url: string, revisions: number[]) {
     path,
     url,
     revisions
-  }).then(getAData)
+  })
 }
 
 export function mergeinfo(path: string, url: string) {
@@ -73,17 +71,17 @@ export function mergeinfo(path: string, url: string) {
       path,
       url
     }
-  }).then(getAData)
+  })
 }
 
 export function addFiles(paths: string[], path: string) {
-  return instance.post('add', { paths, path }).then(getAData)
+  return instance.post('add', { paths, path })
 }
 
 export function delFiles(paths: string[], path: string) {
-  return instance.post('del', { paths, path }).then(getAData)
+  return instance.post('del', { paths, path })
 }
 
 export function commitFiles(path: string, paths: string[], msg: string) {
-  return instance.post('commit', { path, msg, paths }).then(getAData)
+  return instance.post('commit', { path, msg, paths })
 }

@@ -17,14 +17,17 @@
             <v-list-tile-content>
               <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
             </v-list-tile-content>
-            <v-list-tile-avatar @click.stop="edit(data.item)">
+            <v-list-tile-avatar color="red--text" @click.stop="del(data.item)">
+              删除
+            </v-list-tile-avatar>
+            <v-list-tile-avatar color="primary--text" @click.stop="edit(data.item)">
               编辑
             </v-list-tile-avatar>
           </template>
         </template>
       </v-select>
       <v-btn color="cyan" @click="action" :disabled="!command.length">执行</v-btn>
-      <v-dialog v-model="dialog" persistent>
+      <v-dialog v-model="dialog" @input="onClose" persistent>
         <v-btn color="primary" dark slot="activator">添加常用命令</v-btn>
         <v-card>
           <v-card-title>
@@ -58,6 +61,10 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <v-btn color="primary" @click="downloadConfig">导出</v-btn>
+      <file-reader @input="onFileLoad" accept="text/plain,application/json">
+        <span class="primary white--text" style="padding:8px 24px;margin:5px 0;display:inline-block">导入</span>
+      </file-reader>
     </v-layout>
   </div>
 </template>
@@ -66,8 +73,12 @@ import { fetchInfo } from '../../api/ssh'
 import { Terminal } from 'xterm'
 import io from 'socket.io-client'
 import 'xterm/dist/xterm.css'
+import FileReader from '@/components/FileReader'
 
 export default {
+  components: {
+    FileReader
+  },
   data() {
     return {
       dialog: false,
@@ -94,7 +105,6 @@ export default {
     }
   },
   async mounted() {
-    // console.log(getScript, fetchInfo)
     var data = await fetchInfo(this.$route.params.id)
     this.start(data)
   },
@@ -173,14 +183,17 @@ export default {
       this.newcommand.value = ''
       this.saveCommand()
     },
-    saveCommand() {
-      localStorage.setItem('commandList', JSON.stringify(this.originalList.map(item => ({
+    getConfigString() {
+      return JSON.stringify(this.originalList.map(item => ({
         name: item.name,
         children: item.children.map(item => ({
           text: item.text,
           value: item.value
         }))
-      }))))
+      })))
+    },
+    saveCommand() {
+      localStorage.setItem('commandList', this.getConfigString())
     },
     action() {
       if (this.socket) {
@@ -194,6 +207,16 @@ export default {
       this.editData = item
       this.dialog = true
     },
+    del(item) {
+      var arr = this.originalList.find(({name}) => name === item.group).children
+      var i = arr.indexOf(item)
+      arr.splice(i, 1)
+      this.updateList()
+      this.saveCommand()
+    },
+    onClose() {
+      this.editData = null
+    },
     addCategory() {
       this.commandList.push({
         header: this.category
@@ -204,6 +227,25 @@ export default {
       })
       this.category = ''
       this.saveCommand()
+    },
+    downloadConfig() {
+      var src = URL.createObjectURL(new Blob([this.getConfigString()], {
+        type: 'application/json'
+      }))
+      var ele = document.createElement('a')
+      ele.href = src
+      ele.download = 'config.json'
+      ele.click()
+      URL.revokeObjectURL(src)
+    },
+    onFileLoad(t) {
+      try {
+        this.originalList = JSON.parse(t)
+        this.updateList()
+        this.saveCommand()
+      } catch (e) {
+        this.$toast('文件转换失败')
+      }
     }
   },
   computed: {

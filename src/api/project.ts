@@ -1,45 +1,28 @@
-
 import axios from 'axios'
-var instance = axios.create({
-  baseURL: '/api/project'
-});
-import { getAData } from '../util'
+import getAxios from './axios';
+import { listPatternFiles } from './common';
+
+var instance = getAxios('project')
 
 export function fetchDirs() {
-  return instance.get('dir').then(getAData)
+  return instance.get('dir')
 }
 
 export function addDir(item: { name: string, value: string }) {
   return instance.post('dir/add', item)
 }
 export function fetchProjects(dir: string) {
-  return axios.get('/api/files', {
-    params: {
-      pattern: dir + '/src/projects/*'
-    }
-  }).then(getAData)
+  return listPatternFiles(dir + '/src/projects/*')
 }
 export function fetchModules(dir: string) {
-  return axios.get('/api/files', {
-    params: {
-      pattern: dir + '/modules/*'
-    }
-  }).then(getAData)
+  return listPatternFiles(dir + '/modules/*')
 }
 export function fetchImages(dir: string) {
-  return axios.get('/api/files', {
-    params: {
-      pattern: dir + '/**/*.{png,jpg,jpeg,svg,gif,webp,ico}'
-    }
-  }).then(getAData)
+  return listPatternFiles(dir + '/**/*.{png,jpg,jpeg,svg,gif,webp,ico}')
 }
 
 export function fetchDatas(dir: string) {
-  return axios.get('/api/files', {
-    params: {
-      pattern: dir + '/data/*.{json,jsonc}'
-    }
-  }).then(getAData)
+  return listPatternFiles(dir + '/data/*.{json,jsonc}')
 }
 
 export function getData(path: string) {

@@ -14,7 +14,6 @@
 </template>
 <script>
 
-import mid from '../util/mid'
 export default {
   props: ['fields', 'add'],
   data() {
@@ -31,7 +30,7 @@ export default {
       })
       try {
         await this.add(params)
-        mid.$emit('toast', '添加成功');
+        this.$toast('添加成功');
       } finally {
         this.disabled = false;
       }

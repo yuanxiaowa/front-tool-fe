@@ -1,12 +1,9 @@
 
-import axios from 'axios'
-var instance = axios.create({
-  baseURL: '/api/devserver'
-});
-import { getAData } from '../util'
+import getAxios from './axios';
+var instance = getAxios('devserver')
 
 export function fetchList() {
-  return instance.get('list').then(getAData)
+  return instance.get('list')
 }
 export function add(data: {
   name: string
@@ -14,19 +11,19 @@ export function add(data: {
   port: number
   open: boolean
 }) {
-  return instance.post('add', data).then(getAData)
+  return instance.post('add', data)
 }
 export function start(dir: string) {
   return instance.get('start', {
     params: {
       dir
     }
-  }).then(getAData)
+  })
 }
 export function stop(dir: string) {
   return instance.get('stop', {
     params: {
       dir
     }
-  }).then(getAData)
+  })
 }

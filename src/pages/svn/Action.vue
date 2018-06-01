@@ -135,8 +135,8 @@ export default {
             await delFiles(svnStatus.delFiles, this.path).then(addRecord);
           }
           await commitFiles(this.path, [], this.msg).then(addRecord);
-          await svnStatus.refresh();
         }
+        await svnStatus.refresh();
       } catch (e) {
         addRecord(e, 'error');
       }

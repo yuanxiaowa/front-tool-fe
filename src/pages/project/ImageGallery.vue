@@ -1,12 +1,12 @@
 <template>
   <div>
     <div class="text-xs-right">
-      <file-upload title="添加" @input-file="addFile" :put-action="uploadUrl" multiple accept="image/*">
+      <uploader :context="dir" title="添加" @input="addFile">
         <!-- <v-icon x-large dark>add</v-icon> -->
         <span class="pa-2">
           <v-icon x-large dark color="pink">add</v-icon>
         </span>
-      </file-upload>
+      </uploader>
     </div>
     <template v-if="list.length">
       <v-container fluid grid-list-md>
@@ -14,8 +14,8 @@
           <v-flex xs4 v-for="item in list" :key="item.url">
             <v-card flat tile>
               <v-card-media :src="item.url" contain>
-                <file-upload style="height:150px;display:block;width:100%" name="file" :drop="true" :data="{path:item.src}" @input-file="inputFile($event,item)" :put-action="uploadUrl" :accept="item.type">
-                </file-upload>
+                <uploader style="height:150px;display:block;width:100%" :context="dir" :path="item.src" @input="inputFile($event,item)" :accept="item.type">
+                </uploader>
               </v-card-media>
               <v-card-title primary-title>
                 <div>
@@ -36,19 +36,18 @@
 </template>
 
 <script>
-import { fetchImages } from '../../api/project'
-import { getUploadUrl, getFileUrl } from '../../api/common'
-import FileUpload from 'vue-upload-component/src'
+import { fetchImages } from '@/api/project'
+import { getFileUrl } from '@/api/common'
+import Uploader from '@/components/Uploader'
 
 export default {
   props: ['dir'],
   components: {
-    FileUpload
+    Uploader
   },
   data() {
     return {
-      list: [],
-      uploadUrl: getUploadUrl()
+      list: []
     }
   },
   watch: {
@@ -61,7 +60,7 @@ export default {
               src,
               url: getFileUrl(src),
               name: src.substring(src.lastIndexOf('/') + 1),
-              type: this.getMimeType(src.substring(src.lastIndexOf('.') + 1))
+              type: this.getMimeType(src)
             }
           })
         })
@@ -69,36 +68,19 @@ export default {
     }
   },
   methods: {
-    inputFile(newFile, item) {
-      newFile.active = true
-      item.url = this.getImageDataUrl(newFile.file)
+    inputFile(data, item) {
+      item.url = data.url
     },
-    addFile(item, oldItem) {
-      if (!item || item.data.path) {
-        return
-      }
-      var file = item.file;
-      var ext = file.name.substring(file.name.lastIndexOf('.'))
-      var name = Date.now() + Math.random().toString().substring(2, 5) + ext
-      var path = this.dir + '/images/' + name
-      item.data = {
-        path: path
-      }
+    addFile(data) {
       this.list.push({
-        src: path,
-        url: this.getImageDataUrl(file),
-        name,
-        type: this.getMimeType(ext.substring(1))
+        src: data.path,
+        url: data.url,
+        name: data.name,
+        type: data.type
       })
-      item.active = true
     },
-    getImageDataUrl(file) {
-      let URL = window.URL || window.webkitURL
-      if (URL && URL.createObjectURL) {
-        return URL.createObjectURL(file)
-      }
-    },
-    getMimeType(type) {
+    getMimeType(src) {
+      var type = src.substring(src.lastIndexOf('.') + 1)
       if (type === 'jpg') {
         type = 'jpeg'
       }

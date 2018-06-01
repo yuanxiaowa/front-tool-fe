@@ -1,7 +1,9 @@
-import axios from 'axios'
+import getAxios from "./axios";
+
+var instance = getAxios('/api')
 
 export function explore(path: string) {
-  return axios.get('/api/explore', {
+  return instance.get('explore', {
     params: {
       path
     }
@@ -24,5 +26,29 @@ export function getFileUrl(path: string) {
 }
 
 export function getUploadUrl() {
-  return '/api/upload'
+  return '/api/file/upload'
+}
+
+export function listFiles(path: string) {
+  return instance.get('file/list', {
+    params: {
+      path
+    }
+  })
+}
+
+export function listPatternFiles(pattern: string) {
+  return instance.get('file/list', {
+    params: {
+      pattern
+    }
+  })
+}
+
+export function delFile(path: string) {
+  return instance.delete('file', {
+    params: {
+      path
+    }
+  })
 }
